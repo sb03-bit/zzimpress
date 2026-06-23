@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZZIMPRESS — 편집 디자인 동아리</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+  :root{
+    --gray:#D3D3D3; --orange:#FF763F; --green:#DAFEB7;
+    --ink:#1c1c1a; --paper:#ffffff; --line:#1c1c1a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:"Helvetica Neue",-apple-system,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;
+    background:var(--paper);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;font-size:15px}
+  a{color:inherit;text-decoration:none}
+
+  /* ===== 3단 레이아웃 ===== */
+  .layout{display:flex;align-items:flex-start}
+  .col-left{position:sticky;top:0;height:100vh;flex:0 0 320px;
+    padding:40px 34px;overflow:auto}
+  .col-center{flex:1;min-width:0;padding:40px 48px 140px}
+  .col-right{position:sticky;top:0;height:100vh;flex:0 0 250px;
+    padding:40px 34px;
+    display:flex;flex-direction:column}
+
+  /* ===== 왼쪽: 소개 상주 ===== */
+  .rule{height:1px;background:var(--line);margin-bottom:18px}
+  .studio{font-weight:700;letter-spacing:.02em;font-size:16px}
+  .loc{margin-bottom:28px}
+  .lmark{height:26px;width:auto;margin:0 0 24px;display:block}
+  .contact a{display:inline-flex;gap:4px}
+  .contact a:hover{color:var(--orange)}
+  .contact{margin-bottom:26px;font-size:14px;line-height:1.9}
+  .desc{font-size:14px;line-height:1.7;margin-bottom:18px;max-width:34ch;color:#333}
+  .desc-en{color:#888;margin-bottom:32px}
+  /* 왼쪽: 다가오는 아트북페어 */
+  .event{margin-top:34px}
+  .ev-label{font-family:"Courier New",ui-monospace,monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px}
+  .ev-title{font-weight:700;font-size:15px;margin-bottom:14px}
+  .cal{font-family:"Courier New",ui-monospace,monospace;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .cal .m{font-size:12px;letter-spacing:.1em;opacity:.55}
+  .cal .d{display:inline-flex;align-items:center;justify-content:center;
+    min-width:30px;height:30px;padding:0 6px;background:var(--orange);color:#fff;
+    font-weight:700;font-size:15px;border-radius:3px}
+
+  .clock{font-size:13px;letter-spacing:.02em;margin-bottom:6px}
+  .scroll{font-size:13px;letter-spacing:.1em;color:var(--orange);font-weight:600}
+
+  /* ===== 오른쪽: 번호 메뉴 ===== */
+  .numnav a{display:flex;align-items:center;gap:8px;padding:7px 0;
+    border-bottom:1px solid var(--line);font-size:15px;transition:color .2s,padding-left .2s}
+  .numnav a:first-child{border-top:1px solid var(--line)}
+  .numnav a .n{font-size:14px;flex:none;width:16px;text-align:center;display:inline-block}
+  .numnav a:hover,.numnav a.active{color:var(--orange);padding-left:6px}
+  .scroll-r{margin-top:auto;font-size:13px;letter-spacing:.1em;color:var(--orange);font-weight:600;text-align:center}
+
+  /* ===== 가운데: 히어로 (네모 컬러 블록 + 큰 로고) ===== */
+  .hero-face{background:var(--green);min-height:76vh;margin:-40px -48px 96px;padding:56px;
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:26px}
+  .hero-face img{width:min(78%,460px);height:auto;display:block}
+  .hero-tag{font-size:13px;letter-spacing:.32em;text-transform:uppercase;font-weight:700}
+
+  /* ===== 가운데: 작품 상세 행 (textpress/design 구조) ===== */
+  .work{display:grid;grid-template-columns:300px 1fr;gap:36px;
+    padding:48px 0;border-top:1px solid var(--line);align-items:start;cursor:pointer}
+  .works-list .work:first-child{border-top:none;padding-top:0}
+  .wimg{width:100%;background:#efefec;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:rgba(0,0,0,.3);
+    transition:opacity .3s}
+  .work:hover .wimg{opacity:.84}
+  .wtitle{font-size:15px;font-weight:700;line-height:1.45}
+  .wdesc{margin-top:22px;font-size:14px;line-height:1.75;color:#333;max-width:48ch}
+
+  /* ===== 가운데 섹션 공통 ===== */
+  .blk{padding-top:110px}
+  .blk-h{font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--orange);
+    font-weight:700;margin-bottom:40px;border-bottom:1px solid var(--line);padding-bottom:12px}
+
+  /* 히스토리 시계 */
+  .clock-wrap{max-width:760px;margin:0 auto;display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    grid-template-areas:"a06 a01 a02" ". clk ." "a05 a04 a03";
+    gap:28px 20px;align-items:center;justify-items:center}
+  .c01{grid-area:a01}.c02{grid-area:a02}.c03{grid-area:a03}
+  .c04{grid-area:a04}.c05{grid-area:a05}.c06{grid-area:a06}.cclk{grid-area:clk}
+  .clock-item{display:flex;flex-direction:column;align-items:center;gap:10px;
+    font-family:"Courier New",ui-monospace,monospace}
+  .clock-item .num{font-size:14px;font-weight:700}
+  .clock-item .box{background:var(--green);color:var(--ink);font-weight:700;
+    font-size:clamp(13px,1.4vw,17px);line-height:1.2;padding:12px 16px;text-align:center}
+  .clock-face{width:min(30vw,180px);height:auto}
+
+  /* 활동 타임라인 */
+  .row{display:grid;grid-template-columns:120px 1fr auto;gap:20px;align-items:baseline;
+    padding:22px 0;border-bottom:1px solid var(--line)}
+  .row .date{font-size:12px;letter-spacing:.08em;opacity:.6}
+  .row .title{font-size:18px;font-weight:700}
+  .row .title small{display:block;font-size:13px;font-weight:400;opacity:.6;margin-top:5px}
+  .row .tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);padding:4px 10px;border-radius:99px}
+
+  /* 지원 */
+  .join-lead h3{font-size:clamp(24px,3vw,38px);font-weight:800;line-height:1.05;text-transform:uppercase;margin-bottom:18px}
+  .join-lead p{max-width:46ch;margin-bottom:22px}
+  .prep{opacity:.32;letter-spacing:.02em;white-space:nowrap}
+  .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .links a{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);
+    border-radius:99px;padding:7px 14px;font-size:12px;letter-spacing:.03em;transition:.2s}
+  .links a:hover{background:var(--ink);color:#fff}
+  .links a span:last-child{opacity:.6}
+  .collab{margin-top:48px;max-width:560px}
+  .collab-h{font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.5;margin-bottom:14px}
+  form label{display:block;font-size:11px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin:16px 0 8px}
+  form input,form textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);padding:8px 0;font:inherit;font-size:15px;color:inherit;line-height:1.5}
+  form input:focus,form textarea:focus{outline:none;border-color:var(--orange)}
+  form textarea{display:block;resize:vertical;min-height:64px;padding:8px 0}
+  .btn{margin-top:26px;background:var(--ink);color:#fff;border:none;padding:15px 30px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:.2s}
+  .btn:hover{background:var(--orange)}
+  .btn:disabled{opacity:.32;cursor:not-allowed;background:var(--ink)}
+
+  /* 소개 블록 */
+  .about-lead{font-size:clamp(20px,2.4vw,30px);font-weight:600;line-height:1.4;max-width:20ch;margin-bottom:36px}
+  .about-lead em{font-style:italic;color:var(--orange)}
+  .about-body p{max-width:52ch;margin-bottom:16px;color:#333}
+  .about-stats{display:flex;gap:48px;flex-wrap:wrap;margin-top:40px;border-top:1px solid var(--line);padding-top:36px}
+  .about-stats b{display:block;font-size:clamp(34px,5vw,56px);font-weight:800}
+  .about-stats span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+
+  /* 라이트박스 */
+  .lb{position:fixed;inset:0;background:rgba(20,20,18,.93);display:none;align-items:center;justify-content:center;z-index:100;padding:32px}
+  .lb.open{display:flex}
+  .lb-box{max-width:520px;width:100%;text-align:center;color:#fff}
+  .lb-art{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+  .lb-box h3{font-size:22px;font-weight:700;margin-bottom:6px}
+  .lb-box p{font-size:13px;opacity:.7}
+  .lb-close{position:absolute;top:24px;right:32px;color:#fff;font-size:13px;letter-spacing:.15em;cursor:pointer;background:none;border:none}
+
+  /* ===== 반응형 ===== */
+  @media(max-width:900px){
+    .layout{flex-direction:column}
+    .col-left{position:static;height:auto;flex:auto;width:100%;border-right:none;border-bottom:1px solid #eee;order:1}
+    .col-right{position:static;height:auto;flex:auto;width:100%;border-left:none;border-bottom:1px solid #eee;order:2}
+    .col-center{order:3;padding:32px 20px 100px}
+    .hero-face{margin:-32px -20px 64px;padding:32px;min-height:60vh}
+    .scroll-r{margin-top:20px}
+    .grid{column-count:1}
+    .clock-wrap{grid-template-columns:1fr 1fr;grid-template-areas:"clk clk" "a01 a02" "a06 a03" "a05 a04"}
+    .work{grid-template-columns:1fr;gap:18px}
+    .wcredit{order:3}
+    .clock-face{width:48vw}
+    .row{grid-template-columns:1fr;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ===== 왼쪽: 소개 상주 ===== -->
+  <aside class="col-left">
+    <div class="rule"></div>
+    <p class="studio">ZZIMPRESS</p>
+    <p class="loc">Editorial Design Society · Based in Seoul</p>
+    <img class="lmark" src="logo-orange.svg" alt="ZZIMPRESS">
+    <p class="contact">
+      <a href="https://www.instagram.com/zzimpress/" target="_blank">Instagram ↗</a><br>
+      <a href="mailto:[이메일]">[이메일 주소]</a>
+    </p>
+    <p class="desc">2021년에 시작한 ZZIMPRESS는 편집 디자인에 관심 있는 학생들이 모여 잡지·포스터·북디자인을 함께 만드는 동아리입니다. 한 장의 지면이 가진 리듬과 여백, 활자의 무게를 함께 실험하며, 만들고 싶은 마음이면 누구나 참여할 수 있습니다.</p>
+
+    <div class="event">
+      <p class="ev-label">Upcoming</p>
+      <p class="ev-title">Publishers' Table</p>
+      <div class="cal">
+        <span class="m">SEP</span>
+        <span class="d">11</span><span class="d">12</span><span class="d">13</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== 가운데: 작품 스크롤 ===== -->
+  <main class="col-center">
+    <section class="hero-face">
+      <img src="logo-orange.svg" alt="ZZIMPRESS">
+    </section>
+
+    <section id="works" class="blk">
+      <div class="works-list" id="worksList"></div>
+    </section>
+
+    <section id="cv" class="blk">
+      <p class="blk-h">CV</p>
+      <div class="clock-wrap">
+        <div class="clock-item c01"><span class="num">(01)</span><div class="box">2021<br>창립</div></div>
+        <div class="clock-item c02"><span class="num">(02)</span><div class="box">2022<br>첫 정기 모임</div></div>
+        <div class="clock-item c03"><span class="num">(03)</span><div class="box">2022<br>첫 단체전</div></div>
+        <div class="clock-item c04"><span class="num">(04)</span><div class="box">2023<br>워크숍 운영</div></div>
+        <div class="clock-item c05"><span class="num">(05)</span><div class="box">2024<br>졸업 작품집</div></div>
+        <div class="clock-item c06"><span class="num">(06)</span><div class="box">2025<br>GRID Vol.1</div></div>
+        <div class="cclk">
+          <svg class="clock-face" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g stroke="#1c1c1a" stroke-width="2">
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(0 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(30 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(60 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(90 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(120 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(150 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(180 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(210 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(240 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(270 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(300 100 100)"/>
+              <line x1="100" y1="12" x2="100" y2="24" transform="rotate(330 100 100)"/>
+            </g>
+            <rect x="88" y="88" width="24" height="24" fill="#FF763F"/>
+            <line id="hrHand"  x1="100" y1="100" x2="100" y2="58" stroke="#1c1c1a" stroke-width="7" stroke-linecap="round"/>
+            <line id="minHand" x1="100" y1="100" x2="100" y2="34" stroke="#1c1c1a" stroke-width="5" stroke-linecap="round"/>
+            <line id="secHand" x1="100" y1="100" x2="100" y2="28" stroke="#FF763F" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="100" cy="100" r="4" fill="#1c1c1a"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section id="news" class="blk">
+      <p class="blk-h">News</p>
+      <div class="timeline" id="timeline"></div>
+    </section>
+
+    <section id="contact" class="blk">
+      <p class="blk-h">Contact</p>
+      <div class="join-lead">
+        <p>전시·출판·워크숍 등 협업을 제안하거나 동아리 활동이 궁금하시면 편하게 연락 주세요. 신입 부원 모집 문의도 환영합니다. <span class="prep">신입 부원모집_준비중</span></p>
+        <div class="links">
+          <a href="https://www.instagram.com/zzimpress/" target="_blank">Instagram</a>
+          <a href="mailto:[이메일]">[이메일 주소]</a>
+        </div>
+      </div>
+      <div class="collab">
+        <form id="contactForm">
+          <label for="name">이름</label>
+          <input id="name" type="text" placeholder="홍길동" required>
+          <label for="email">이메일</label>
+          <input id="email" type="email" placeholder="you@email.com" required>
+          <label for="msg">문의 내용</label>
+          <textarea id="msg" placeholder="가입 문의, 협업 제안 등을 남겨주세요."></textarea>
+          <button class="btn" id="submitBtn" type="submit" disabled>보내기</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== 오른쪽: 번호 메뉴 ===== -->
+  <aside class="col-right">
+    <nav class="numnav" id="numnav">
+      <a href="#works"><span class="n">❶</span> Works</a>
+      <a href="#cv"><span class="n">❷</span> CV</a>
+      <a href="#news"><span class="n">❸</span> News</a>
+      <a href="#contact"><span class="n">❹</span> Contact</a>
+    </nav>
+  </aside>
+
+</div>
+
+<!-- 라이트박스 -->
+<div class="lb" id="lb">
+  <button class="lb-close" id="lbClose">CLOSE ✕</button>
+  <div class="lb-box">
+    <div class="lb-art" id="lbArt"></div>
+    <h3 id="lbTitle"></h3>
+    <p id="lbDesc"></p>
+  </div>
+</div>
+
+<script>
+  /* 작품 데이터 (더미) — img에 경로를 넣으면 실제 이미지로 교체됩니다
+     ratio: 이미지 박스 비율 / desc: 작품 설명 / credit: 오른쪽 크레딧 */
+  const dummyDesc="여기에 작품 설명을 적습니다. 작업의 배경과 의도, 사용한 활자와 그리드, 제작 과정에서의 실험과 선택을 자유롭게 서술하세요. 한 권의 책이 만들어내는 여백과 움직임에 대한 이야기를 담아도 좋습니다.";
+  const works = [
+    {titleKr:"작품 제목 01", titleEn:"Work Title One", cat:"잡지", yr:"2026", ratio:"3/4", desc:dummyDesc, credit:"GRID Vol.1\nZZIMPRESS", img:""},
+    {titleKr:"작품 제목 02", titleEn:"Work Title Two", cat:"포스터", yr:"2026", ratio:"4/3", desc:dummyDesc, credit:"Poster Series\nZZIMPRESS", img:""},
+    {titleKr:"작품 제목 03", titleEn:"Work Title Three", cat:"북디자인", yr:"2025", ratio:"3/4", desc:dummyDesc, credit:"Book\nZZIMPRESS", img:""},
+    {titleKr:"작품 제목 04", titleEn:"Work Title Four", cat:"아이덴티티", yr:"2025", ratio:"4/3", desc:dummyDesc, credit:"Identity\nZZIMPRESS", img:""},
+    {titleKr:"작품 제목 05", titleEn:"Work Title Five", cat:"진(zine)", yr:"2024", ratio:"3/4", desc:dummyDesc, credit:"Zine\nZZIMPRESS", img:""},
+    {titleKr:"작품 제목 06", titleEn:"Work Title Six", cat:"에디토리얼", yr:"2024", ratio:"4/3", desc:dummyDesc, credit:"Editorial\nZZIMPRESS", img:""},
+  ];
+  const list=document.getElementById('worksList');
+  works.forEach((w)=>{
+    const c=document.createElement('div');c.className='work';
+    const bg=w.img?`background-image:url('${w.img}');background-size:cover;background-position:center;`:'';
+    c.innerHTML=`
+      <div class="wimg" style="aspect-ratio:${w.ratio};${bg}">${w.img?'':'IMAGE'}</div>
+      <div class="wmain">
+        <div class="wtitle">${w.yr}, ${w.cat}<br>${w.titleKr} ${w.titleEn}</div>
+        <p class="wdesc">${w.desc}</p>
+      </div>`;
+    c.addEventListener('click',()=>openLb(w));
+    list.appendChild(c);
+  });
+
+  /* 라이트박스 */
+  const lb=document.getElementById('lb');
+  function openLb(w){
+    const art=document.getElementById('lbArt');
+    art.style.cssText=w.img
+      ?`background-image:url('${w.img}');background-size:cover;background-position:center;`
+      :`background:#3a3a36;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.25em;width:100%`;
+    art.textContent=w.img?'':'IMAGE';
+    document.getElementById('lbTitle').textContent=w.titleKr;
+    document.getElementById('lbDesc').textContent=`${w.titleEn} · ${w.pub} · ${w.yr}`;
+    lb.classList.add('open');
+  }
+  document.getElementById('lbClose').onclick=()=>lb.classList.remove('open');
+  lb.addEventListener('click',e=>{if(e.target===lb)lb.classList.remove('open')});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open')});
+
+  /* 활동 타임라인 */
+  const events=[
+    {date:"2026.03",title:"신입 부원 모집",sub:"1학기 정기 모집 · 지원서 접수",tag:"모집"},
+    {date:"2026.04",title:"주제전 'MARGIN' 제작",sub:"여백을 주제로 한 팀 프로젝트",tag:"프로젝트"},
+    {date:"2026.05",title:"정기 합평회",sub:"중간 작업물 공유 및 피드백",tag:"모임"},
+    {date:"2026.06",title:"학기말 전시 + 작품집 발간",sub:"[전시 장소] · 인쇄물 배포",tag:"전시"},
+  ];
+  const tl=document.getElementById('timeline');
+  events.forEach(ev=>{
+    const r=document.createElement('div');r.className='row';
+    r.innerHTML=`<div class="date">${ev.date}</div><div class="title">${ev.title}<small>${ev.sub}</small></div><div class="tag">${ev.tag}</div>`;
+    tl.appendChild(r);
+  });
+
+  /* CV 시계 실시간 구동 */
+  const hr=document.getElementById('hrHand'),mn=document.getElementById('minHand'),sc=document.getElementById('secHand');
+  function runClock(){
+    const f=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    let [h,m,s]=f.format(new Date()).split(':').map(Number);
+    h=h%12;
+    sc.setAttribute('transform',`rotate(${s*6} 100 100)`);
+    mn.setAttribute('transform',`rotate(${m*6+s*0.1} 100 100)`);
+    hr.setAttribute('transform',`rotate(${h*30+m*0.5} 100 100)`);
+  }
+  runClock();setInterval(runClock,1000);
+
+  /* 스크롤스파이 (오른쪽 번호 메뉴 활성화) */
+  const links=[...document.querySelectorAll('.numnav a')];
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting){
+      const id='#'+e.target.id;
+      links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')===id));
+    }});
+  },{rootMargin:"-45% 0px -50% 0px"});
+  secs.forEach(s=>s&&obs.observe(s));
+
+  /* 폼 (데모) — 입력 전 버튼 비활성화 */
+  const cForm=document.getElementById('contactForm');
+  const sBtn=document.getElementById('submitBtn');
+  const fields=['name','email','msg'].map(id=>document.getElementById(id));
+  const validate=()=>{ sBtn.disabled=!fields.every(f=>f.value.trim()!==''); };
+  fields.forEach(f=>f.addEventListener('input',validate));
+  validate();
+  cForm.addEventListener('submit',e=>{
+    e.preventDefault();
+    alert('문의가 접수되었습니다. (데모) 실제 전송은 메일 서비스나 구글폼에 연결하세요.');
+    e.target.reset(); validate();
+  });
+</script>
+</body>
+</html>
