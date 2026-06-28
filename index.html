@@ -371,18 +371,27 @@
   },{rootMargin:"-45% 0px -50% 0px"});
   secs.forEach(s=>s&&obs.observe(s));
 
-  /* 폼 (데모) — 입력 전 버튼 비활성화 */
-  const cForm=document.getElementById('contactForm');
-  const sBtn=document.getElementById('submitBtn');
-  const fields=['name','email','msg'].map(id=>document.getElementById(id));
-  const validate=()=>{ sBtn.disabled=!fields.every(f=>f.value.trim()!==''); };
-  fields.forEach(f=>f.addEventListener('input',validate));
+cForm.addEventListener('submit', e => {
+  e.preventDefault();
+
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const msg = document.getElementById('msg').value;
+
+  const subject = encodeURIComponent(`[ZZIMPRESS] ${name}님의 문의`);
+  const body = encodeURIComponent(
+`Name: ${name}
+Email: ${email}
+
+${msg}`
+  );
+
+  window.location.href =
+    `mailto:zzimpress.book@gmail.com?subject=${subject}&body=${body}`;
+
+  cForm.reset();
   validate();
-  cForm.addEventListener('submit',e=>{
-    e.preventDefault();
-    alert('문의가 접수되었습니다. (데모) 실제 전송은 메일 서비스나 구글폼에 연결하세요.');
-    e.target.reset(); validate();
-  });
+});
 </script>
 </body>
 </html>
