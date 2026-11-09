@@ -5,35 +5,94 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZZIMPRESS</title>
 <meta name="description" content="A collective exploring editorial design through research, practice, and publishing.">
-  
+
 <!-- Open Graph -->
 <meta property="og:title" content="ZZIMPRESS">
 <meta property="og:site_name" content="ZZIMPRESS">
 
 <meta property="og:description"
       content="Editorial Design Society · Based in Seoul">
-  
+
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sb03-bit.github.io/zzimpress/">
 <meta property="og:image"
       content="https://sb03-bit.github.io/zzimpress/og-image.png">
-  
+
 <link rel="icon" type="image/png" href="favicon.png">
+<!-- 한글 서체: Pretendard (무료 OFL, jsDelivr CDN — 페이지에 쓰인 글자 묶음만 나눠 받는 dynamic subset) -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard-dynamic-subset.css">
 <style>
+  /* ===== 영문 서체 "ZZ Latin" =====
+     Mac은 기본 내장 Futura Medium, Futura가 없는 기기(Windows·Android 등)는 Jost(무료 OFL)를 받아 쓴다.
+     unicode-range로 영문·숫자·기호에만 적용 → 한글 글자는 자동으로 Pretendard.
+     size-adjust 94.3% = 33/35 → 한글 35pt : 영문 33pt 시각 보정(같은 크기 값에서 글자 높이가 맞도록).
+     굵기는 Medium 하나만 쓴다(본문은 Jost에서만 400). */
+  @font-face{font-family:"ZZ Latin";font-style:normal;font-weight:100 450;font-display:swap;size-adjust:94.3%;
+    src:local("Futura-Medium"),local("Futura Medium"),url("https://cdn.jsdelivr.net/npm/@fontsource/jost@5.3.0/files/jost-latin-400-normal.woff2") format("woff2");
+    unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212}
+  @font-face{font-family:"ZZ Latin";font-style:normal;font-weight:451 900;font-display:swap;size-adjust:94.3%;
+    src:local("Futura-Medium"),local("Futura Medium"),url("https://cdn.jsdelivr.net/npm/@fontsource/jost@5.3.0/files/jost-latin-500-normal.woff2") format("woff2");
+    unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212}
+
   :root{
+    /* 색 */
     --gray:#D3D3D3; --orange:#FF763F; --green:#DAFEB7;
     --ink:#1c1c1a; --paper:#ffffff; --line:#1c1c1a;
+    --ink-2:#333333;          /* 본문 보조 */
+    --ink-3:#6b6b66;          /* 메타 정보(날짜·분류·폼 라벨) */
+    --orange-text:var(--orange); /* 글자로 쓰는 오렌지. 작은 글자 대비가 낮으면 #C94A16 */
+
+    /* 타이포 시스템 (Headline·Sub Headline 스펙 기준)
+       영문·숫자·기호 Futura Medium 자간 0 / 한글 Pretendard, 제목급 SemiBold 자간 +4%
+       섞어 쓸 때 영문은 한글의 33/35 크기 → 위 @font-face의 size-adjust가 자동 보정 */
+    --font-sans:"ZZ Latin","Pretendard",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+
+    --fs-label:12px;                     /* 영문 대문자 라벨·태그·번호 */
+    --fs-small:14px;                     /* 사이드바·메타·버튼 */
+    --fs-body:16px;                      /* 본문·메뉴·입력창 */
+    --fs-title:20px;                     /* 작품명·뉴스 제목 */
+    --fs-lead:clamp(22px,2.4vw,28px);    /* 리드 문장·라이트박스 제목 */
+    --fs-display:clamp(32px,4.4vw,48px); /* 큰 제목·숫자 */
+
+    --fw-regular:400; /* 본문 */
+    --fw-medium:500;  /* 라벨·메타·메뉴·버튼 */
+    --fw-head:600;    /* 로고·제목급 — 한글 Pretendard SemiBold, 영문은 Futura Medium */
+
+    --lh-tight:1.2;  /* 라벨·큰 제목 */
+    --lh-snug:1.45;  /* 제목·짧은 묶음 */
+    --lh-body:1.7;   /* 본문 */
+
+    --tr-caps:.04em;    /* 작은 영문 대문자 캡션·라벨·태그·버튼 — 한 값으로 통일 */
+    --tr-body:0;        /* 본문 */
+    --tr-head-ko:.04em; /* 제목급 한글(영문·숫자는 0) — 스크립트가 한글 글자만 <span class="ko">로 감싼다 */
+
+    --measure:34em;   /* 본문 한 줄 최대 폭(한글 약 34자) */
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{font-family:"Helvetica Neue",-apple-system,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;
-    background:var(--paper);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;font-size:15px}
+  body{font-family:var(--font-sans);font-size:var(--fs-body);line-height:var(--lh-body);
+    letter-spacing:var(--tr-body);font-weight:var(--fw-regular);
+    background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;
+    word-break:keep-all;overflow-wrap:break-word;
+    font-variant-numeric:tabular-nums;font-synthesis:weight}
   a{color:inherit;text-decoration:none}
+  p{text-wrap:pretty}
+  .ko{letter-spacing:var(--tr-head-ko)}
+
+  /* ===== 공통 역할: 라벨(영문 대문자) ===== */
+  .ev-label,.blk-h,.cal .m,.hero-tag,.wimg,.row .tag,.collab-h,.lb-close,
+  .about-stats span,.clock-item .num,.scroll,.scroll-r{
+    font-size:var(--fs-label);line-height:var(--lh-tight);letter-spacing:var(--tr-caps);
+    text-transform:uppercase;font-weight:var(--fw-medium)}
+  /* 공통 역할: 메타(한글 섞인 보조 정보) */
+  .wmeta,.row .date,form label,.loc{
+    font-size:var(--fs-small);line-height:var(--lh-snug);font-weight:var(--fw-medium);color:var(--ink-3)}
 
   /* ===== 3단 레이아웃 ===== */
   .layout{display:flex;align-items:flex-start}
   .col-left{position:sticky;top:0;height:100vh;flex:0 0 320px;
-    padding:40px 34px;overflow:auto}
+    padding:40px 34px;overflow:auto;font-size:var(--fs-small)}
   .col-center{flex:1;min-width:0;padding:40px 48px 140px}
   .col-right{position:sticky;top:0;height:100vh;flex:0 0 250px;
     padding:40px 34px;
@@ -41,95 +100,121 @@
 
   /* ===== 왼쪽: 소개 상주 ===== */
   .rule{height:1px;background:var(--line);margin-bottom:18px}
-  .studio{font-weight:700;letter-spacing:.02em;font-size:16px}
+  .studio{font-size:var(--fs-body);font-weight:var(--fw-head);letter-spacing:0;line-height:var(--lh-snug)}
   .loc{margin-bottom:28px}
   .lmark-link{display:inline-block;cursor:pointer}
   .lmark{height:26px;width:auto;margin:0 0 24px;display:block}
   .contact a{display:inline-flex;gap:4px}
-  .contact a:hover{color:var(--orange)}
-  .contact{margin-bottom:26px;font-size:14px;line-height:1.9}
-  .desc{font-size:14px;line-height:1.7;margin-bottom:18px;max-width:34ch;color:#333}
+  .contact a:hover{color:var(--orange-text)}
+  .contact{margin-bottom:26px;line-height:var(--lh-body);font-weight:var(--fw-medium)}
+  .desc{line-height:var(--lh-body);margin-bottom:18px;max-width:34ch;color:var(--ink-2)}
   .desc-en{color:#888;margin-bottom:32px}
   /* 왼쪽: 다가오는 아트북페어 */
   .event{margin-top:34px}
-  .ev-label{font-family:"Courier New",ui-monospace,monospace;font-size:11px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px}
-  .ev-title{font-weight:700;font-size:15px;margin-bottom:14px}
-  .cal{font-family:"Courier New",ui-monospace,monospace;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .cal .m{font-size:12px;letter-spacing:.1em;opacity:.55}
+  .ev-list{list-style:none;display:flex;flex-direction:column;gap:22px}
+  .ev-label{color:var(--orange-text);font-weight:var(--fw-medium);margin-bottom:8px}
+  .ev-title{font-size:var(--fs-body);font-weight:var(--fw-head);line-height:var(--lh-snug);margin-bottom:10px}
+  .cal{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .cal .m{color:var(--ink-3)}
   .cal .d{display:inline-flex;align-items:center;justify-content:center;
     min-width:30px;height:30px;padding:0 6px;background:var(--orange);color:#fff;
-    font-weight:700;font-size:15px;border-radius:3px}
+    font-size:var(--fs-small);font-weight:var(--fw-medium);letter-spacing:0;line-height:1;border-radius:3px}
 
-  .clock{font-size:13px;letter-spacing:.02em;margin-bottom:6px}
-  .scroll{font-size:13px;letter-spacing:.1em;color:var(--orange);font-weight:600}
+  .clock{font-size:var(--fs-small);margin-bottom:6px}
+  .scroll{color:var(--orange-text);font-weight:var(--fw-medium)}
 
   /* ===== 오른쪽: 번호 메뉴 ===== */
-  .numnav a{display:flex;align-items:center;gap:8px;padding:7px 0;
-    border-bottom:1px solid var(--line);font-size:15px;transition:color .2s,padding-left .2s}
+  .numnav a{display:flex;align-items:center;gap:8px;padding:8px 0;
+    border-bottom:1px solid var(--line);font-size:var(--fs-body);font-weight:var(--fw-medium);
+    line-height:var(--lh-snug);transition:color .2s,padding-left .2s}
   .numnav a:first-child{border-top:1px solid var(--line)}
-  .numnav a .n{font-size:14px;flex:none;width:16px;text-align:center;display:inline-block}
-  .numnav a:hover,.numnav a.active{color:var(--orange);padding-left:6px}
-  .scroll-r{margin-top:auto;font-size:13px;letter-spacing:.1em;color:var(--orange);font-weight:600;text-align:center}
+  .numnav a .n{flex:none;width:1.2em;display:inline-block;text-align:center;font-size:var(--fs-small);letter-spacing:0}
+  .numnav a:hover,.numnav a.active{color:var(--orange-text);padding-left:6px}
+  .scroll-r{margin-top:auto;color:var(--orange-text);font-weight:var(--fw-medium);text-align:center}
 
   /* ===== 가운데: 히어로 (네모 컬러 블록 + 큰 로고) ===== */
   .hero-face{background:var(--green);min-height:76vh;margin:-40px -48px 96px;padding:56px;
     display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:26px}
   .hero-face img{width:min(78%,460px);height:auto;display:block}
-  .hero-tag{font-size:13px;letter-spacing:.32em;text-transform:uppercase;font-weight:700}
+  .hero-tag{font-weight:var(--fw-medium)}
 
-  /* ===== 가운데: 작품 상세 행 (textpress/design 구조) ===== */
+  /* ===== 가운데: 작품 상세 행 ===== */
   .work{display:grid;grid-template-columns:300px 1fr;gap:36px;
     padding:48px 0;border-top:1px solid var(--line);align-items:start;cursor:pointer}
   .works-list .work:first-child{border-top:none;padding-top:0}
   .wimg{width:100%;background:#efefec;overflow:hidden;
     display:flex;align-items:center;justify-content:center;
-    font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:rgba(0,0,0,.3);
-    transition:opacity .3s}
+    color:rgba(0,0,0,.3);transition:opacity .3s}
   .work:hover .wimg{opacity:.84}
-  .wtitle{font-size:14px;font-weight:700;line-height:1.45}
-  .wdesc{margin-top:22px;font-size:14px;line-height:1.75;color:#333;max-width:48ch}
+  .wmain{min-width:0}
+  .wmeta{margin-bottom:10px}
+  .wtitle{font-size:var(--fs-title);font-weight:var(--fw-head);line-height:var(--lh-snug);
+    letter-spacing:0;text-wrap:balance}
+  .wtitle .en{display:block;font-weight:var(--fw-regular);color:var(--ink-3);letter-spacing:0}
+  .wdesc{margin-top:20px;line-height:var(--lh-body);color:var(--ink-2);max-width:var(--measure)}
+
+  /* ===== 준비 중 안내 (작업·소식이 비어 있을 때) ===== */
+  [hidden]{display:none!important}
+  .soon{display:grid;grid-template-columns:300px 1fr;gap:36px;align-items:start}
+  .soon-frame{position:relative;padding:14px;max-width:100%}
+  .soon-page{aspect-ratio:3/4;max-width:100%;background:var(--paper);color:var(--ink);
+    display:flex;align-items:center;justify-content:center}
+  .soon-logo{width:58%;height:auto;display:block}
+  /* 재단선(crop marks): 지면 네 모서리 바깥의 가는 선 */
+  .cm{position:absolute;width:14px;height:14px}
+  .cm::before,.cm::after{content:"";position:absolute;background:var(--ink)}
+  .cm::before{width:10px;height:1px}
+  .cm::after{width:1px;height:10px}
+  .cm.tl{top:0;left:0}.cm.tl::before{left:0;bottom:0}.cm.tl::after{right:0;top:0}
+  .cm.tr{top:0;right:0}.cm.tr::before{right:0;bottom:0}.cm.tr::after{left:0;top:0}
+  .cm.bl{bottom:0;left:0}.cm.bl::before{left:0;top:0}.cm.bl::after{right:0;bottom:0}
+  .cm.br{bottom:0;right:0}.cm.br::before{right:0;top:0}.cm.br::after{left:0;bottom:0}
+  .soon .wmain{padding-top:14px}
+  .soon .links{margin-top:24px}
 
   /* ===== 가운데 섹션 공통 ===== */
   .blk{padding-top:110px}
-  .blk-h{font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--orange);
-    font-weight:700;margin-bottom:40px;border-bottom:1px solid var(--line);padding-bottom:12px}
+  .blk-h{color:var(--orange-text);font-weight:var(--fw-medium);
+    margin-bottom:40px;border-bottom:1px solid var(--line);padding-bottom:12px}
 
   /* 히스토리 시계 */
   .clock-wrap{max-width:760px;margin:0 auto;display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    grid-template-areas:"a06 a01 a02" ". clk ." "a05 a04 a03";
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-areas:". a01 ." "a05 clk a02" "a04 . a03"; /* 12시부터 시계 방향 오각형 */
     gap:28px 20px;align-items:center;justify-items:center}
   .c01{grid-area:a01}.c02{grid-area:a02}.c03{grid-area:a03}
-  .c04{grid-area:a04}.c05{grid-area:a05}.c06{grid-area:a06}.cclk{grid-area:clk}
-  .clock-item{display:flex;flex-direction:column;align-items:center;gap:10px;
-    font-family:"Courier New",ui-monospace,monospace}
-  .clock-item .num{font-size:14px;font-weight:700}
-  .clock-item .box{background:var(--green);color:var(--ink);font-weight:700;
-    font-size:clamp(13px,1.4vw,17px);line-height:1.2;padding:12px 16px;text-align:center}
+  .c04{grid-area:a04}.c05{grid-area:a05}.cclk{grid-area:clk}
+  .clock-item{max-width:100%;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .clock-item .num{font-weight:var(--fw-medium);letter-spacing:var(--tr-caps)}
+  .clock-item .box{max-width:100%;overflow-wrap:anywhere;background:var(--green);color:var(--ink);font-weight:var(--fw-head);
+    font-size:var(--fs-body);line-height:var(--lh-snug);padding:12px 16px;text-align:center}
   .clock-face{width:min(30vw,180px);height:auto}
 
   /* 활동 타임라인 */
   .row{display:grid;grid-template-columns:120px 1fr auto;gap:20px;align-items:baseline;
     padding:22px 0;border-bottom:1px solid var(--line)}
-  .row .date{font-size:12px;letter-spacing:.08em;opacity:.6}
-  .row .title{font-size:18px;font-weight:700}
-  .row .title small{display:block;font-size:13px;font-weight:400;opacity:.6;margin-top:5px}
-  .row .tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);padding:4px 10px;border-radius:99px}
+  .row .title{font-size:var(--fs-title);font-weight:var(--fw-head);line-height:var(--lh-snug);
+    letter-spacing:0;min-width:0}
+  .row .title small{display:block;font-size:var(--fs-small);font-weight:var(--fw-regular);line-height:var(--lh-body);
+    letter-spacing:var(--tr-body);color:var(--ink-3);margin-top:6px}
+  .row .tag{border:1px solid var(--line);padding:5px 10px 4px;border-radius:99px}
 
   /* 지원 */
-  .join-lead h3{font-size:clamp(24px,3vw,38px);font-weight:800;line-height:1.05;text-transform:uppercase;margin-bottom:18px}
-  .join-lead p{max-width:46ch;margin-bottom:22px}
-  .prep{opacity:.32;letter-spacing:.02em;white-space:nowrap}
+  .join-lead h3{font-size:var(--fs-display);font-weight:var(--fw-head);line-height:var(--lh-tight);
+    letter-spacing:0;text-transform:uppercase;text-wrap:balance;margin-bottom:18px}
+  .join-lead p{max-width:var(--measure);margin-bottom:22px}
+  .prep{color:var(--ink-3);opacity:.7;white-space:nowrap}
   .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
   .links a{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);
-    border-radius:99px;padding:7px 14px;font-size:12px;letter-spacing:.03em;transition:.2s}
+    border-radius:99px;padding:8px 16px;font-size:var(--fs-small);font-weight:var(--fw-medium);
+    line-height:var(--lh-tight);letter-spacing:0;transition:.2s}
   .links a:hover{background:var(--ink);color:#fff}
   .links a span:last-child{opacity:.6}
   .collab{margin-top:48px;max-width:560px}
-  .collab-h{font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.5;margin-bottom:14px}
-  form label{display:block;font-size:11px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin:16px 0 8px}
-  form input,form textarea{width:100%;background:var(--green);border:none;border-radius:4px;padding:11px 13px;font:inherit;font-size:15px;color:var(--ink);line-height:1.5}
+  .collab-h{color:var(--ink-3);margin-bottom:14px}
+  form label{display:block;margin:18px 0 8px}
+  form input,form textarea{width:100%;background:var(--green);border:none;border-radius:4px;padding:11px 13px;
+    font:inherit;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--ink)}
   form input::placeholder,form textarea::placeholder{color:rgba(0,0,0,.4)}
   /* 자동완성 시에도 배경 그린 유지 */
   form input:-webkit-autofill,form input:-webkit-autofill:focus{
@@ -137,30 +222,33 @@
     box-shadow:0 0 0 1000px var(--green) inset;
     -webkit-box-shadow:0 0 0 1000px var(--green) inset}
   form input:focus,form textarea:focus{outline:2px solid var(--orange);outline-offset:0}
-  .field-hint{display:none;font-size:12px;color:#d8462b;margin-top:7px;letter-spacing:.01em}
+  .field-hint{display:none;font-size:var(--fs-small);line-height:var(--lh-snug);color:#d8462b;margin-top:7px}
   .field-hint.show{display:block}
   form input.invalid{outline:2px solid #d8462b}
   form textarea{display:block;resize:vertical;min-height:80px}
-  .btn{margin-top:26px;background:var(--ink);color:#fff;border:none;padding:15px 30px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:.2s}
+  .btn{margin-top:26px;background:var(--ink);color:#fff;border:none;padding:15px 32px;
+    font:inherit;font-size:var(--fs-small);font-weight:var(--fw-medium);letter-spacing:var(--tr-caps);line-height:var(--lh-tight);
+    cursor:pointer;transition:.2s}
   .btn:hover{background:var(--orange)}
   .btn:disabled{opacity:.32;cursor:not-allowed;background:var(--ink)}
 
   /* 소개 블록 */
-  .about-lead{font-size:clamp(20px,2.4vw,30px);font-weight:600;line-height:1.4;max-width:20ch;margin-bottom:36px}
-  .about-lead em{font-style:italic;color:var(--orange)}
-  .about-body p{max-width:52ch;margin-bottom:16px;color:#333}
+  .about-lead{font-size:var(--fs-lead);font-weight:var(--fw-head);line-height:var(--lh-snug);
+    letter-spacing:0;max-width:20em;text-wrap:balance;margin-bottom:36px}
+  .about-lead em{font-style:normal;color:var(--orange-text)}
+  .about-body p{max-width:var(--measure);margin-bottom:16px;color:var(--ink-2)}
   .about-stats{display:flex;gap:48px;flex-wrap:wrap;margin-top:40px;border-top:1px solid var(--line);padding-top:36px}
-  .about-stats b{display:block;font-size:clamp(34px,5vw,56px);font-weight:800}
-  .about-stats span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+  .about-stats b{display:block;font-size:var(--fs-display);font-weight:var(--fw-head);line-height:var(--lh-tight);letter-spacing:0}
+  .about-stats span{color:var(--ink-3)}
 
   /* 라이트박스 */
   .lb{position:fixed;inset:0;background:rgba(20,20,18,.93);display:none;align-items:center;justify-content:center;z-index:100;padding:32px}
   .lb.open{display:flex}
   .lb-box{max-width:520px;width:100%;text-align:center;color:#fff}
-  .lb-art{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;margin-bottom:22px}
-  .lb-box h3{font-size:22px;font-weight:700;margin-bottom:6px}
-  .lb-box p{font-size:13px;opacity:.7}
-  .lb-close{position:absolute;top:24px;right:32px;color:#fff;font-size:13px;letter-spacing:.15em;cursor:pointer;background:none;border:none}
+  .lb-art{aspect-ratio:3/4;max-width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+  .lb-box h3{font-size:var(--fs-lead);font-weight:var(--fw-head);line-height:var(--lh-snug);letter-spacing:0;margin-bottom:6px}
+  .lb-box p{font-size:var(--fs-small);line-height:var(--lh-snug);opacity:.7}
+  .lb-close{position:absolute;top:24px;right:32px;color:#fff;cursor:pointer;background:none;border:none;font-family:inherit}
 
   /* ===== 반응형 ===== */
   @media(max-width:900px){
@@ -171,15 +259,20 @@
     .hero-face{margin:-32px -20px 64px;padding:32px;min-height:60vh}
     .scroll-r{margin-top:20px}
     .grid{column-count:1}
-    .clock-wrap{grid-template-columns:1fr 1fr;grid-template-areas:"clk clk" "a01 a02" "a06 a03" "a05 a04"}
+    .clock-wrap{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"clk clk" "a01 a02" "a03 a04" "a05 a05"}
     .work{grid-template-columns:1fr;gap:18px}
+    .soon{grid-template-columns:1fr;gap:10px}
+    .soon-frame{width:min(100%,300px)}
+    .soon .wmain{padding-top:0}
     .wcredit{order:3}
     .clock-face{width:48vw}
     .row{grid-template-columns:1fr;gap:6px}
+    .row .tag{justify-self:start}
   }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="zzWink" viewBox="0 0 994 529"><path fill="currentColor" fill-rule="evenodd" d="M494.5 525.9C480.4 521 468.6 509.9 460.9 494.5C452.5 477.6 451.8 460.5 458.9 445.4C462.6 437.4 468.5 431.6 476.7 427.8C482.1 425.2 484.3 424.8 490.8 424.8C504.3 424.9 515.8 430.5 527.1 442.8C538.4 455 544 469.3 544 486C544 504.6 536.4 518.3 522.2 525.2C515.4 528.4 502.6 528.8 494.5 525.9ZM1.7 411.2C-1.2 408 -0.2 405.3 7.3 396.3C30.9 368.1 67.3 340.5 103.4 323.5C120.7 315.3 134.2 311.1 162.5 304.8C170.4 303.1 170.6 301 163 299.2C129.1 291.5 118.8 288.1 98.4 278C81.4 269.6 61.7 257.1 46 244.9C27 230.2 -0 201.8 -0 196.6C0 195.3 0.8 193.6 1.8 192.7C3.5 191.1 10.4 191 80.4 191C154.1 191 157.2 191.1 160.8 192.9C162.9 194 170.4 199.9 177.6 206C213.7 237.3 258.6 265.4 296 280.3C302.3 282.8 316.9 287.4 328.5 290.5C352.2 296.8 356.5 298.6 356.5 302C356.5 305.4 352.1 307.2 330.1 313C296.7 321.8 252 337.5 232.5 347.2C215.9 355.6 186.1 377.2 157.8 401.4C152.4 406.1 147.6 409.3 145.3 409.9C141.8 410.8 52.7 413 18.4 413C5.1 413 3.1 412.8 1.7 411.2ZM765.2 379.8C764.3 378.9 764 355 764 278.3L764 178L766.5 176.4C768.9 174.8 769.5 175.2 823 209.4C852.7 228.4 877.9 244 879 244C881.5 244 948.4 204.4 952.1 200.7C955.8 197 958.4 188.3 957.6 182.5C956.3 174 942.3 155.1 925 138.7C899.1 114 870 100.7 839 99.3C816.9 98.3 800.1 101.9 779.3 112C738.4 132 704.4 175.4 686.1 231.1C684.9 234.7 682.9 238.7 681.6 239.9C676 245.2 666.6 243 663.1 235.7C662 233.4 643.7 185.6 622.5 129.5C581.6 21.4 582.5 24.3 588.1 22.5C589.8 21.9 591.3 22.8 595.4 26.7C643.5 73.2 672.8 100.5 676.4 102.1C681.6 104.5 687.4 104.5 692.5 102.1C697.6 99.7 700.8 96.2 705.5 87.5C723 55.4 750.6 27.3 777.9 13.5C807.3 -1.2 840.6 -3.9 870.4 6.1C909.9 19.3 943.9 52 966.5 98.5C981.2 128.6 989.6 160.2 993 197.5C993.6 203.8 994 244.8 994 293.2C994 368.8 993.8 378 992.4 379.4C991.6 380.3 990.2 381 989.5 381C988.7 381 963.6 372 933.5 360.9L879 340.8L824.4 360.9C794.4 372 769.1 381 768.1 381C767.2 381 765.9 380.5 765.2 379.8Z"/></symbol></svg>
 <div class="layout">
 
   <!-- ===== 왼쪽: 소개 상주 ===== -->
@@ -195,12 +288,23 @@
     <p class="desc">2021년에 시작한 ZZIMPRESS는 편집 디자인에 관심 있는 학생들이 모여 잡지·포스터·북디자인을 함께 만드는 동아리입니다. 한 장의 지면이 가진 리듬과 여백, 활자의 무게를 함께 실험합니다.</p>
 
     <div class="event">
-      <p class="ev-label">Upcoming</p>
-      <p class="ev-title">Publishers' Table</p>
-      <div class="cal">
-        <span class="m">SEP</span>
-        <span class="d">11</span><span class="d">12</span><span class="d">13</span>
-      </div>
+      <p class="ev-label">2026 Fairs</p>
+      <ul class="ev-list">
+        <li>
+          <p class="ev-title">Publishers' Table</p>
+          <div class="cal">
+            <span class="m">SEP</span>
+            <span class="d">11</span><span class="d">12</span><span class="d">13</span>
+          </div>
+        </li>
+        <li>
+          <p class="ev-title">UE-18</p>
+          <div class="cal">
+            <span class="m">NOV</span>
+            <span class="d">6</span><span class="d">7</span><span class="d">8</span>
+          </div>
+        </li>
+      </ul>
     </div>
   </aside>
 
@@ -211,18 +315,29 @@
     </section>
 
     <section id="works" class="blk">
+      <p class="blk-h">Works</p>
+      <!-- 작업이 하나도 없을 때만 보이는 안내 (works 배열에 항목을 넣으면 자동으로 숨겨짐) -->
+      <div class="soon" id="worksSoon">
+        <div class="soon-frame" aria-hidden="true">
+          <span class="cm tl"></span><span class="cm tr"></span><span class="cm bl"></span><span class="cm br"></span>
+          <div class="soon-page"><svg class="soon-logo" viewBox="0 0 994 529" aria-hidden="true" focusable="false"><use href="#zzWink"/></svg></div>
+        </div>
+        <div class="wmain">
+          <h3 class="wtitle">작업을 정리하고 있어요<span class="en">Works coming soon</span></h3>
+          <div class="links"><a href="https://www.instagram.com/zzimpress/" target="_blank">Instagram ↗</a></div>
+        </div>
+      </div>
       <div class="works-list" id="worksList"></div>
     </section>
 
     <section id="cv" class="blk">
       <p class="blk-h">CV</p>
       <div class="clock-wrap">
-        <div class="clock-item c01"><span class="num">(01)</span><div class="box">2021<br>창립</div></div>
-        <div class="clock-item c02"><span class="num">(02)</span><div class="box">2022<br>첫 정기 모임</div></div>
-        <div class="clock-item c03"><span class="num">(03)</span><div class="box">2022<br>첫 단체전</div></div>
-        <div class="clock-item c04"><span class="num">(04)</span><div class="box">2023<br>워크숍 운영</div></div>
-        <div class="clock-item c05"><span class="num">(05)</span><div class="box">2024<br>졸업 작품집</div></div>
-        <div class="clock-item c06"><span class="num">(06)</span><div class="box">2025<br>GRID Vol.1</div></div>
+        <div class="clock-item c01"><span class="num">(01)</span><div class="box">2026<br>찜프 시작</div></div>
+        <div class="clock-item c02"><span class="num">(02)</span><div class="box">offcutseoul2026</div></div>
+        <div class="clock-item c03"><span class="num">(03)</span><div class="box">Paper cut&amp;Silkscreen</div></div>
+        <div class="clock-item c04"><span class="num">(04)</span><div class="box">Publishers' Table</div></div>
+        <div class="clock-item c05"><span class="num">(05)</span><div class="box">UE-18</div></div>
         <div class="cclk">
           <svg class="clock-face" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g stroke="#1c1c1a" stroke-width="2">
@@ -251,6 +366,17 @@
 
     <section id="news" class="blk">
       <p class="blk-h">News</p>
+      <!-- 소식이 하나도 없을 때만 보이는 안내 (events 배열에 항목을 넣으면 자동으로 숨겨짐) -->
+      <div class="soon" id="newsSoon">
+        <div class="soon-frame" aria-hidden="true">
+          <span class="cm tl"></span><span class="cm tr"></span><span class="cm bl"></span><span class="cm br"></span>
+          <div class="soon-page"><svg class="soon-logo" viewBox="0 0 994 529" aria-hidden="true" focusable="false"><use href="#zzWink"/></svg></div>
+        </div>
+        <div class="wmain">
+          <h3 class="wtitle">소식을 준비하고 있어요<span class="en">News coming soon</span></h3>
+          <div class="links"><a href="https://www.instagram.com/zzimpress/" target="_blank">Instagram ↗</a></div>
+        </div>
+      </div>
       <div class="timeline" id="timeline"></div>
     </section>
 
@@ -302,17 +428,12 @@
 </div>
 
 <script>
-  /* 작품 데이터 (더미) — img에 경로를 넣으면 실제 이미지로 교체됩니다
-     ratio: 이미지 박스 비율 / desc: 작품 설명 / credit: 오른쪽 크레딧 */
-  const dummyDesc="여기에 작품 설명을 적습니다. 작업의 배경과 의도, 사용한 활자와 그리드, 제작 과정에서의 실험과 선택을 자유롭게 서술하세요. 한 권의 책이 만들어내는 여백과 움직임에 대한 이야기를 담아도 좋습니다.";
+  /* 작품 데이터 — 비어 있으면 '준비 중' 안내가 보여요. 사진이 준비되면 아래 형식으로 추가하세요.
+     ratio: 이미지 박스 비율 / img: 이미지 경로 / desc: 작품 설명
+     {titleKr:"작품 제목", titleEn:"Work Title", cat:"잡지", yr:"2026", ratio:"3/4", img:"images/work-01.jpg", desc:"작품 설명"}, */
   const works = [
-    {titleKr:"작품 제목 01", titleEn:"Work Title One", cat:"잡지", yr:"2026", ratio:"3/4", desc:dummyDesc, credit:"GRID Vol.1\nZZIMPRESS", img:""},
-    {titleKr:"작품 제목 02", titleEn:"Work Title Two", cat:"포스터", yr:"2026", ratio:"4/3", desc:dummyDesc, credit:"Poster Series\nZZIMPRESS", img:""},
-    {titleKr:"작품 제목 03", titleEn:"Work Title Three", cat:"북디자인", yr:"2025", ratio:"3/4", desc:dummyDesc, credit:"Book\nZZIMPRESS", img:""},
-    {titleKr:"작품 제목 04", titleEn:"Work Title Four", cat:"아이덴티티", yr:"2025", ratio:"4/3", desc:dummyDesc, credit:"Identity\nZZIMPRESS", img:""},
-    {titleKr:"작품 제목 05", titleEn:"Work Title Five", cat:"진(zine)", yr:"2024", ratio:"3/4", desc:dummyDesc, credit:"Zine\nZZIMPRESS", img:""},
-    {titleKr:"작품 제목 06", titleEn:"Work Title Six", cat:"에디토리얼", yr:"2024", ratio:"4/3", desc:dummyDesc, credit:"Editorial\nZZIMPRESS", img:""},
   ];
+  document.getElementById('worksSoon').hidden = works.length > 0;
   const list=document.getElementById('worksList');
   works.forEach((w)=>{
     const c=document.createElement('div');c.className='work';
@@ -320,7 +441,8 @@
     c.innerHTML=`
       <div class="wimg" style="aspect-ratio:${w.ratio};${bg}">${w.img?'':'IMAGE'}</div>
       <div class="wmain">
-        <div class="wtitle">${w.yr}, ${w.cat}<br>${w.titleKr} ${w.titleEn}</div>
+        <p class="wmeta">${w.yr} · ${w.cat}</p>
+        <h3 class="wtitle">${w.titleKr}<span class="en">${w.titleEn}</span></h3>
         <p class="wdesc">${w.desc}</p>
       </div>`;
     c.addEventListener('click',()=>openLb(w));
@@ -333,10 +455,11 @@
     const art=document.getElementById('lbArt');
     art.style.cssText=w.img
       ?`background-image:url('${w.img}');background-size:cover;background-position:center;`
-      :`background:#3a3a36;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.25em;width:100%`;
+      :`background:#3a3a36;color:rgba(255,255,255,.4);font-size:var(--fs-label);letter-spacing:var(--tr-caps);width:100%`;
     art.textContent=w.img?'':'IMAGE';
     document.getElementById('lbTitle').textContent=w.titleKr;
-    document.getElementById('lbDesc').textContent=`${w.titleEn} · ${w.pub} · ${w.yr}`;
+    trackKorean(document.getElementById('lbTitle'));
+    document.getElementById('lbDesc').textContent=`${w.titleEn} · ${w.cat} · ${w.yr}`;
     lb.classList.add('open');
   }
   document.getElementById('lbClose').onclick=()=>lb.classList.remove('open');
@@ -344,18 +467,43 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open')});
 
   /* 활동 타임라인 */
+  /* 소식 데이터 — 비어 있으면 '준비 중' 안내가 보여요. 아래 형식으로 추가하세요.
+     {date:"2026.11", title:"소식 제목", sub:"한 줄 설명", tag:"News"}, */
   const events=[
-    {date:"2026.00",title:"뉴스 제목 01",sub:"뉴스 내용이 들어갈 자리입니다. 더미 텍스트.",tag:"News"},
-    {date:"2026.00",title:"뉴스 제목 02",sub:"뉴스 내용이 들어갈 자리입니다. 더미 텍스트.",tag:"News"},
-    {date:"2026.00",title:"뉴스 제목 03",sub:"뉴스 내용이 들어갈 자리입니다. 더미 텍스트.",tag:"News"},
-    {date:"2026.00",title:"뉴스 제목 04",sub:"뉴스 내용이 들어갈 자리입니다. 더미 텍스트.",tag:"News"},
   ];
+  document.getElementById('newsSoon').hidden = events.length > 0;
   const tl=document.getElementById('timeline');
   events.forEach(ev=>{
     const r=document.createElement('div');r.className='row';
     r.innerHTML=`<div class="date">${ev.date}</div><div class="title">${ev.title}<small>${ev.sub}</small></div><div class="tag">${ev.tag}</div>`;
     tl.appendChild(r);
   });
+
+  /* 제목급 한글 자간 +4% (영문·숫자·기호는 0) — 한글 글자 묶음만 <span class="ko">로 감싼다 */
+  const HEAD_SEL='.studio,.ev-title,.wtitle,.row .title,.clock-item .box,.lb-box h3,.join-lead h3,.about-lead,.about-stats b';
+  const HANGUL=/[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF]+(?:\s+[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF]+)*/g;
+  function trackKorean(root){
+    const els=(root.matches&&root.matches(HEAD_SEL)?[root]:[]).concat([...root.querySelectorAll(HEAD_SEL)]);
+    els.forEach(el=>{
+      const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),nodes=[];
+      while(w.nextNode()) nodes.push(w.currentNode);
+      nodes.forEach(n=>{
+        if(n.parentElement.closest('small,.en,.ko')) return;
+        const t=n.nodeValue; HANGUL.lastIndex=0;
+        if(!HANGUL.test(t)) return;
+        HANGUL.lastIndex=0;
+        const f=document.createDocumentFragment(); let i=0,m;
+        while((m=HANGUL.exec(t))){
+          if(m.index>i) f.append(t.slice(i,m.index));
+          const k=document.createElement('span'); k.className='ko'; k.textContent=m[0]; f.append(k);
+          i=m.index+m[0].length;
+        }
+        if(i<t.length) f.append(t.slice(i));
+        n.replaceWith(f);
+      });
+    });
+  }
+  trackKorean(document.body);
 
   /* CV 시계 실시간 구동 */
   const hr=document.getElementById('hrHand'),mn=document.getElementById('minHand'),sc=document.getElementById('secHand');
