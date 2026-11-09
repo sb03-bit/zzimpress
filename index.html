@@ -19,7 +19,7 @@
       content="https://sb03-bit.github.io/zzimpress/og-image.png">
 
 <link rel="icon" type="image/png" href="favicon.png">
-<!-- 영문 서체: Futura PT (Adobe Fonts 웹 프로젝트 키트 — Medium 500·Demi 600을 키트에 포함해야 함) -->
+<!-- 영문 서체: Futura PT (Adobe Fonts 웹 프로젝트 키트 — Book 400·Medium 500 사용) -->
 <link rel="stylesheet" href="https://use.typekit.net/arq4yyq.css">
 <!-- 한글 서체: Pretendard (무료 OFL, jsDelivr CDN — 페이지에 쓰인 글자 묶음만 나눠 받는 dynamic subset) -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -50,24 +50,38 @@
        각 역할이 --w-lat(영문 굵기) · --w-ko(한글 굵기) · --t-ko(한글 자간)를 정한다 */
     --font-sans:"futura-pt","ZZ Latin","Pretendard",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
 
-    --fs-label:12px;                     /* 영문 대문자 라벨·태그·번호 */
+    --fs-label:14px;                     /* 영문 대문자 라벨·태그·번호 (12px은 작아 보여 14px로) */
     --fs-small:14px;                     /* 사이드바·메타·버튼 */
     --fs-body:16px;                      /* 본문·메뉴·입력창 */
     --fs-title:20px;                     /* 작품명·뉴스 제목 */
     --fs-lead:clamp(22px,2.4vw,28px);    /* 리드 문장·라이트박스 제목 */
     --fs-display:clamp(32px,4.4vw,48px); /* 큰 제목·숫자 */
+    --fs-button:var(--fs-body);          /* 텍스트 버튼·링크(Instagram, 이메일, 보내기, 사이드바 링크) */
 
+    /* 굵기 — 세로 획 두께를 실측해 한글과 영문을 짝지었다(글자 크기 100 기준 획 두께)
+         Futura PT  Book 8.0 · Medium 10.5 · 700 16.0
+         Pretendard 한글 Regular 8.0 · Medium 9.5 · SemiBold 11.0
+       본문   Futura PT Book 400   + Pretendard Regular 400   (8.0 / 8.0)
+       UI     Futura PT Medium 500 + Pretendard Medium 500    (10.5 / 9.5)
+       제목급 Futura PT Medium 500 + Pretendard SemiBold 600  (10.5 / 11.0) */
     --fw-regular:400;  /* 본문 한글 — Pretendard Regular */
-    --fw-lat-body:500; /* 본문 영문 — Futura PT Medium */
+    --fw-lat-body:400; /* 본문 영문 — Futura PT Book (더 진하게 하려면 500) */
     --fw-medium:500;   /* 라벨·메타·메뉴·버튼 — Futura PT Medium · Pretendard Medium */
-    --fw-head:600;     /* 로고·제목급 — Futura PT Demi · Pretendard SemiBold */
+    --fw-head:600;     /* 로고·제목급 한글 — Pretendard SemiBold */
+    --fw-lat-head:500; /* 로고·제목급 영문 — Futura PT Medium */
+
+    /* 크기 보정 — 모든 영문 서체의 대문자 높이를 Pretendard 대문자 높이(글자 크기의 70.7%)에 맞춘다.
+       Futura PT는 1.06배 커지고, Mac 기본 Futura는 0.93배 작아진다(스펙의 33/35와 같은 비율) */
+    --cap-height:.707;
 
     --lh-tight:1.2;  /* 라벨·큰 제목 */
     --lh-snug:1.45;  /* 제목·짧은 묶음 */
     --lh-body:1.7;   /* 본문 */
 
-    --tr-caps:.04em;    /* 작은 영문 대문자 캡션·라벨·태그·버튼 — 한 값으로 통일 */
-    --tr-body:0;        /* 본문 */
+    /* 자간 — 영문은 대문자 캡션에만 +4%, 나머지는 0. 한글은 제목급에만 +4%.
+       공백 폭이 Futura PT 24.7 / Pretendard 25.1(글자 크기 100 기준)로 거의 같아 섞어 써도 낱말 사이가 고르다 */
+    --tr-caps:.04em;    /* 영문 대문자 캡션·라벨·태그·번호 */
+    --tr-body:0;        /* 본문·메뉴·버튼 */
     --tr-head-ko:.04em; /* 제목급 한글(영문·숫자는 0) */
 
     --measure:34em;   /* 본문 한 줄 최대 폭(한글 약 34자) */
@@ -85,7 +99,8 @@
     letter-spacing:var(--tr-body);--w-lat:var(--fw-lat-body);--w-ko:var(--fw-regular);--t-ko:0;font-weight:var(--w-lat);
     background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;
     word-break:keep-all;overflow-wrap:break-word;
-    font-variant-numeric:tabular-nums;font-synthesis:weight}
+    font-variant-numeric:tabular-nums;font-synthesis:weight;
+    font-size-adjust:cap-height var(--cap-height)}
   a{color:inherit;text-decoration:none}
   p{text-wrap:pretty}
   .ko{font-weight:var(--w-ko);letter-spacing:var(--t-ko)}
@@ -110,20 +125,20 @@
 
   /* ===== 왼쪽: 소개 상주 ===== */
   .rule{height:1px;background:var(--line);margin-bottom:18px}
-  .studio{font-size:var(--fs-body);--w-lat:var(--fw-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);letter-spacing:0;line-height:var(--lh-snug)}
+  .studio{font-size:var(--fs-body);--w-lat:var(--fw-lat-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);letter-spacing:0;line-height:var(--lh-snug)}
   .loc{margin-bottom:28px}
   .lmark-link{display:inline-block;cursor:var(--cursor-link)}
   .lmark{height:26px;width:auto;margin:0 0 24px;display:block}
   .contact a{display:inline-flex;gap:4px}
   .contact a:hover{color:var(--orange-text)}
-  .contact{margin-bottom:26px;line-height:var(--lh-body);--w-lat:var(--fw-medium);--w-ko:var(--fw-medium);--t-ko:0;font-weight:var(--w-lat)}
+  .contact{margin-bottom:26px;font-size:var(--fs-button);line-height:var(--lh-body);--w-lat:var(--fw-medium);--w-ko:var(--fw-medium);--t-ko:0;font-weight:var(--w-lat)}
   .desc{line-height:var(--lh-body);margin-bottom:18px;max-width:34ch;color:var(--ink-2)}
   .desc-en{color:#888;margin-bottom:32px}
   /* 왼쪽: 다가오는 아트북페어 */
   .event{margin-top:34px}
   .ev-list{list-style:none;display:flex;flex-direction:column;gap:22px}
   .ev-label{color:var(--orange-text);--w-lat:var(--fw-medium);--w-ko:var(--fw-medium);--t-ko:0;font-weight:var(--w-lat);margin-bottom:8px}
-  .ev-title{font-size:var(--fs-body);--w-lat:var(--fw-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-snug);margin-bottom:10px}
+  .ev-title{font-size:var(--fs-body);--w-lat:var(--fw-lat-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-snug);margin-bottom:10px}
   .cal{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .cal .m{color:var(--ink-3)}
   .cal .d{display:inline-flex;align-items:center;justify-content:center;
@@ -158,7 +173,7 @@
   .work:hover .wimg{opacity:.84}
   .wmain{min-width:0}
   .wmeta{margin-bottom:10px}
-  .wtitle{font-size:var(--fs-title);--w-lat:var(--fw-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-snug);
+  .wtitle{font-size:var(--fs-title);--w-lat:var(--fw-lat-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-snug);
     letter-spacing:0;text-wrap:balance}
   .wtitle .en{display:block;--w-lat:var(--fw-lat-body);--w-ko:var(--fw-regular);--t-ko:0;font-weight:var(--w-lat);color:var(--ink-3);letter-spacing:0}
   .wdesc{margin-top:20px;line-height:var(--lh-body);color:var(--ink-2);max-width:var(--measure)}
@@ -196,27 +211,27 @@
   .c04{grid-area:a04}.c05{grid-area:a05}.cclk{grid-area:clk}
   .clock-item{max-width:100%;display:flex;flex-direction:column;align-items:center;gap:10px}
   .clock-item .num{--w-lat:var(--fw-medium);--w-ko:var(--fw-medium);--t-ko:0;font-weight:var(--w-lat);letter-spacing:var(--tr-caps)}
-  .clock-item .box{max-width:100%;overflow-wrap:anywhere;background:var(--green);color:var(--ink);--w-lat:var(--fw-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);
+  .clock-item .box{max-width:100%;overflow-wrap:anywhere;background:var(--green);color:var(--ink);--w-lat:var(--fw-lat-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);
     font-size:var(--fs-body);line-height:var(--lh-snug);padding:12px 16px;text-align:center}
   .clock-face{width:min(30vw,180px);height:auto}
 
   /* 활동 타임라인 */
   .row{display:grid;grid-template-columns:120px 1fr auto;gap:20px;align-items:baseline;
     padding:22px 0;border-bottom:1px solid var(--line)}
-  .row .title{font-size:var(--fs-title);--w-lat:var(--fw-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-snug);
+  .row .title{font-size:var(--fs-title);--w-lat:var(--fw-lat-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-snug);
     letter-spacing:0;min-width:0}
   .row .title small{display:block;font-size:var(--fs-small);--w-lat:var(--fw-lat-body);--w-ko:var(--fw-regular);--t-ko:0;font-weight:var(--w-lat);line-height:var(--lh-body);
     letter-spacing:var(--tr-body);color:var(--ink-3);margin-top:6px}
   .row .tag{border:1px solid var(--line);padding:5px 10px 4px;border-radius:99px}
 
   /* 지원 */
-  .join-lead h3{font-size:var(--fs-display);--w-lat:var(--fw-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-tight);
+  .join-lead h3{font-size:var(--fs-display);--w-lat:var(--fw-lat-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-tight);
     letter-spacing:0;text-transform:uppercase;text-wrap:balance;margin-bottom:18px}
   .join-lead p{max-width:var(--measure);margin-bottom:22px}
   .prep{color:var(--ink-3);opacity:.7;white-space:nowrap}
   .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
   .links a{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);
-    border-radius:99px;padding:8px 16px;font-size:var(--fs-small);--w-lat:var(--fw-medium);--w-ko:var(--fw-medium);--t-ko:0;font-weight:var(--w-lat);
+    border-radius:99px;padding:11px 20px;font-size:var(--fs-button);--w-lat:var(--fw-medium);--w-ko:var(--fw-medium);--t-ko:0;font-weight:var(--w-lat);
     line-height:var(--lh-tight);letter-spacing:0;transition:.2s}
   .links a:hover{background:var(--ink);color:#fff}
   .links a span:last-child{opacity:.6}
@@ -236,19 +251,19 @@
   .field-hint.show{display:block}
   form input.invalid{outline:2px solid #d8462b}
   form textarea{display:block;resize:vertical;min-height:80px}
-  .btn{margin-top:26px;background:var(--ink);color:#fff;border:none;padding:15px 32px;
-    font:inherit;font-size:var(--fs-small);--w-lat:var(--fw-medium);--w-ko:var(--fw-medium);--t-ko:0;font-weight:var(--w-lat);letter-spacing:var(--tr-caps);line-height:var(--lh-tight);
+  .btn{margin-top:26px;background:var(--ink);color:#fff;border:none;padding:15px 36px;
+    font:inherit;font-size:var(--fs-button);--w-lat:var(--fw-medium);--w-ko:var(--fw-medium);--t-ko:0;font-weight:var(--w-lat);letter-spacing:0;line-height:var(--lh-tight);
     cursor:var(--cursor-link);transition:.2s}
   .btn:hover{background:var(--orange)}
   .btn:disabled{opacity:.32;cursor:not-allowed;background:var(--ink)}
 
   /* 소개 블록 */
-  .about-lead{font-size:var(--fs-lead);--w-lat:var(--fw-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-snug);
+  .about-lead{font-size:var(--fs-lead);--w-lat:var(--fw-lat-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-snug);
     letter-spacing:0;max-width:20em;text-wrap:balance;margin-bottom:36px}
   .about-lead em{font-style:normal;color:var(--orange-text)}
   .about-body p{max-width:var(--measure);margin-bottom:16px;color:var(--ink-2)}
   .about-stats{display:flex;gap:48px;flex-wrap:wrap;margin-top:40px;border-top:1px solid var(--line);padding-top:36px}
-  .about-stats b{display:block;font-size:var(--fs-display);--w-lat:var(--fw-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-tight);letter-spacing:0}
+  .about-stats b{display:block;font-size:var(--fs-display);--w-lat:var(--fw-lat-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-tight);letter-spacing:0}
   .about-stats span{color:var(--ink-3)}
 
   /* 라이트박스 */
@@ -256,9 +271,9 @@
   .lb.open{display:flex}
   .lb-box{max-width:520px;width:100%;text-align:center;color:#fff}
   .lb-art{aspect-ratio:3/4;max-width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:22px}
-  .lb-box h3{font-size:var(--fs-lead);--w-lat:var(--fw-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-snug);letter-spacing:0;margin-bottom:6px}
+  .lb-box h3{font-size:var(--fs-lead);--w-lat:var(--fw-lat-head);--w-ko:var(--fw-head);--t-ko:var(--tr-head-ko);font-weight:var(--w-lat);line-height:var(--lh-snug);letter-spacing:0;margin-bottom:6px}
   .lb-box p{font-size:var(--fs-small);line-height:var(--lh-snug);opacity:.7}
-  .lb-close{position:absolute;top:24px;right:32px;color:#fff;cursor:var(--cursor-link);background:none;border:none;font-family:inherit}
+  .lb-close{font-size:var(--fs-small);position:absolute;top:24px;right:32px;color:#fff;cursor:var(--cursor-link);background:none;border:none;font-family:inherit}
 
   /* ===== 반응형 ===== */
   @media(max-width:900px){
@@ -344,8 +359,8 @@
       <p class="blk-h">CV</p>
       <div class="clock-wrap">
         <div class="clock-item c01"><span class="num">(01)</span><div class="box">2026<br>찜프 시작</div></div>
-        <div class="clock-item c02"><span class="num">(02)</span><div class="box">offcutseoul2026</div></div>
-        <div class="clock-item c03"><span class="num">(03)</span><div class="box">Paper cut&amp;Silkscreen</div></div>
+        <div class="clock-item c02"><span class="num">(02)</span><div class="box">Offcut Seoul 2026</div></div>
+        <div class="clock-item c03"><span class="num">(03)</span><div class="box">Paper cut &amp; Silkscreen</div></div>
         <div class="clock-item c04"><span class="num">(04)</span><div class="box">Publishers' Table</div></div>
         <div class="clock-item c05"><span class="num">(05)</span><div class="box">UE-18</div></div>
         <div class="cclk">
