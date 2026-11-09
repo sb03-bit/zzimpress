@@ -116,10 +116,10 @@
 
   /* ===== 3단 레이아웃 ===== */
   .layout{display:flex;align-items:flex-start}
-  .col-left{position:sticky;top:0;height:100vh;flex:0 0 320px;
+  .col-left{position:sticky;top:0;height:100vh;flex:0 0 clamp(240px,22vw,320px);
     padding:40px 34px;overflow:auto;font-size:var(--fs-small)}
-  .col-center{flex:1;min-width:0;padding:40px 48px 140px}
-  .col-right{position:sticky;top:0;height:100vh;flex:0 0 250px;
+  .col-center{flex:1;min-width:0;padding:40px 48px 140px;container-type:inline-size}
+  .col-right{position:sticky;top:0;height:100vh;flex:0 0 clamp(180px,17vw,250px);
     padding:40px 34px;
     display:flex;flex-direction:column}
 
@@ -277,20 +277,26 @@
 
   /* ===== 반응형 ===== */
   @media(max-width:900px){
-    .layout{flex-direction:column}
+    .layout{flex-direction:column;align-items:stretch}
     .col-left{position:static;height:auto;flex:auto;width:100%;border-right:none;border-bottom:1px solid #eee;order:1}
     .col-right{position:static;height:auto;flex:auto;width:100%;border-left:none;border-bottom:1px solid #eee;order:2}
     .col-center{order:3;padding:32px 20px 100px}
     .hero-face{margin:-32px -20px 64px;padding:32px;min-height:60vh}
     .scroll-r{margin-top:20px}
     .grid{column-count:1}
-    .clock-wrap{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"clk clk" "a01 a02" "a03 a04" "a05 a05"}
+    .wcredit{order:3}
+  }
+  /* 가운데 칸의 실제 폭에 따라 바뀌는 배치 — 화면 폭이 아니라 칸 폭 기준이라
+     좌우 사이드바가 있는 중간 크기 화면(900~1200px)에서도 깨지지 않는다 */
+  @container (max-width:560px){
     .work{grid-template-columns:1fr;gap:18px}
     .soon{grid-template-columns:1fr;gap:10px}
     .soon-frame{width:min(100%,300px)}
     .soon .wmain{padding-top:0}
-    .wcredit{order:3}
-    .clock-face{width:48vw}
+  }
+  @container (max-width:480px){
+    .clock-wrap{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"clk clk" "a01 a02" "a03 a04" "a05 a05"}
+    .clock-face{width:min(48cqi,180px)}
     .row{grid-template-columns:1fr;gap:6px}
     .row .tag{justify-self:start}
   }
